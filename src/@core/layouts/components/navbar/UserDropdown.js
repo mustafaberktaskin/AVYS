@@ -47,7 +47,7 @@ const UserDropdown = () => {
           status="online"
         />
       </DropdownToggle>
-      <DropdownMenu end>
+      {/* <DropdownMenu end>
         <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
           <User size={14} className="me-75" />
           <span className="align-middle">Profile</span>
@@ -85,7 +85,7 @@ const UserDropdown = () => {
           <Power size={14} className="me-75" />
           <span className="align-middle">Logout</span>
         </DropdownItem>
-      </DropdownMenu>
+      </DropdownMenu> */}
     </UncontrolledDropdown>
   );
 };
