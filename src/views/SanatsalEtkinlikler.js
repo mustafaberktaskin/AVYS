@@ -14,9 +14,11 @@ import {
   } from "reactstrap";
   import { useState, useEffect } from "react";
   import { Plus, Trash} from "react-feather";
+  import { addActivitys, getActivitys, deleteActivitys} from "../Firebase";
   
   const SanatsalEtkinlikler = () => {
     const [formModal, setFormModal] = useState(false);
+    const [submit, setSubmit] = useState(false);
     const [katilim_turu, setKatilim_turu] = useState("");
     const [etkinlik_adi, setEtkinlik_adi] = useState("");
     const [etkinlik_tarihi, setEtkinlik_tarihi] = useState("");
@@ -26,39 +28,34 @@ import {
 
 
 
-    const [data, setData] = useState([
-      {
-        katilim_turu: "İzleyici",
-        etkinlik_adi: "Alice in Wonderland",
-        etkinlik_tarihi: "2020",
-        etkinlik_yeri: "Zorlu PSM",
-        etkinlik_konusu: "Müzikal",
-      },
-    ]);
+    const [data, setData] = useState([]);
   
     const handleSubmit = () => {
-      const updatedData = data.concat({
-        katilim_turu: katilim_turu,
-        etkinlik_adi: etkinlik_adi,
-        etkinlik_tarihi: etkinlik_tarihi,
-        etkinlik_yeri: etkinlik_yeri,
-        etkinlik_konusu: etkinlik_konusu,
-      });
-        setData(updatedData);
+      if (katilim_turu !== '' && etkinlik_adi !== '' && etkinlik_tarihi !== '' && etkinlik_yeri !== '' && etkinlik_konusu !== '') {
+        addActivitys(katilim_turu, etkinlik_adi, etkinlik_tarihi, etkinlik_yeri, etkinlik_konusu);
+        setSubmit(!submit);
         setFormModal(!formModal);
         setKatilim_turu("");
         setEtkinlik_adi("");
         setEtkinlik_tarihi("");
         setEtkinlik_yeri("");
         setEtkinlik_konusu("");
-
+      }
     };
 
-    const handleDelete = (index) => {
-        const updatedData = [...data];
-        updatedData.splice(index, 1);
-        setData(updatedData);
-        };
+    useEffect(() => {
+      const fetchData = async () => {
+        try{
+          const fetchedData = await getActivitys();
+          setData(fetchedData);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      fetchData();
+    }, [submit,data]);
+
+
   
     return (
       <div>
@@ -166,7 +163,7 @@ import {
                     <Button
                     color="danger"
                     size="sm"
-                    onClick={() => handleDelete(item.id)}
+                    onClick={() => deleteActivitys(item.etkinlik_adi)}
                     >
                     <Trash />
                     </Button>

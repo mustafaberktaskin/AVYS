@@ -13,51 +13,46 @@ import {
     Label,
     Input,
 } from "reactstrap";
-import { useState } from "react";
-
-
-
-
+import { useState, useEffect } from "react";
+import { addThesis, getThesis, deleteThesis } from "../Firebase";
 
 
 
 const Tezler = () => {
     const [formModal, setFormModal] = useState(false);
+    const [submit, setSubmit] = useState(false);
     const [yil, setYil] = useState("");
     const [ad_soyad, setAd_soyad] = useState("");
     const [tez_adi, setTez_adi] = useState("");
     const [universite, setUniversite] = useState("");
     
 
-const [data, setData] = useState([
-    {
-        yil: "2020",
-        ad_soyad: "Mustafa Berk Taşkın",
-        tez_adi: "Yapay Zeka ile İnsan Yüzü Tanıma",
-        universite: "İstanbul Teknik Üniversitesi",
-    },
-  ]);
+const [data, setData] = useState([]);
 
     const handleSubmit = () => {
-        const updatedData = data.concat({
-
-            yil: yil,
-            ad_soyad: ad_soyad,
-            tez_adi: tez_adi,
-            universite: universite,
-        });
-        setData(updatedData);
-        setFormModal(!formModal);
-        setYil("");
-        setAd_soyad("");
-        setTez_adi("");
-        setUniversite("");
+        if (yil !== '' && ad_soyad !== '' && tez_adi !== '' && universite !== '') {
+            addThesis(yil, ad_soyad, tez_adi, universite);
+            setSubmit(!submit);
+            setFormModal(!formModal);
+            setYil("");
+            setAd_soyad("");
+            setTez_adi("");
+            setUniversite("");
+        }
     };
 
-    const handleDelete = (yil) => {
-        const updatedData = data.filter((item) => item.yil !== yil);
-        setData(updatedData);
-    };
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const fetchedData = await getThesis();
+                setData(fetchedData);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        fetchData();
+    }, [submit, data]);
+
   return (
     <div id="tezler">
         <div className="content-header">
@@ -147,7 +142,7 @@ const [data, setData] = useState([
                     <td>{item.tez_adi}</td>
                     <td>{item.universite}</td>
                     <td>     
-                          <Button.Ripple color="flat-danger" onClick={() => handleDelete(item.yil)}>
+                          <Button.Ripple color="flat-danger" onClick={() => deleteThesis(item.tez_adi)}>
                                 <Trash className="mr-50" size={15} />
                             </Button.Ripple>
                     </td>

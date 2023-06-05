@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 // ** Custom Hooks
 import { useSkin } from "@hooks/useSkin";
 
+import { useState } from "react";
+
 // ** Icons Imports
 import { Facebook, Twitter, Mail, GitHub } from "react-feather";
 
@@ -29,11 +31,25 @@ import illustrationsDark from "@src/assets/images/pages/register-v2-dark.svg";
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
 
+// ** Firebase import
+import {register} from "../Firebase";
+import { useNavigate } from "react-router-dom";
+
 const Register = () => {
   // ** Hooks
   const { skin } = useSkin();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const source = skin === "dark" ? illustrationsDark : illustrationsLight;
+
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    register(email, password);
+    navigate("/");
+  };
 
   return (
     <div className="auth-wrapper auth-cover">
@@ -57,19 +73,8 @@ const Register = () => {
             </CardText>
             <Form
               className="auth-register-form mt-2"
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={handleSubmit}
             >
-              <div className="mb-1">
-                <Label className="form-label" for="register-username">
-                  Kullanıcı Adı
-                </Label>
-                <Input
-                  type="text"
-                  id="register-username"
-                  placeholder="kullanıcı adı"
-                  autoFocus
-                />
-              </div>
               <div className="mb-1">
                 <Label className="form-label" for="register-email">
                   Email
@@ -78,6 +83,8 @@ const Register = () => {
                   type="email"
                   id="register-email"
                   placeholder="email@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div className="mb-1">
@@ -87,9 +94,11 @@ const Register = () => {
                 <InputPasswordToggle
                   className="input-group-merge"
                   id="register-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <Button tag={Link} to="/" color="primary" block>
+              <Button  color="primary" block disabled={!email || !password}>
                 Kayıt ol
               </Button>
             </Form>

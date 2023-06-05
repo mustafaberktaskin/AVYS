@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Accordion,
   AccordionBody,
@@ -13,6 +13,7 @@ import {
   Input,
 } from "reactstrap";
 import { Plus, Trash } from "react-feather";
+import { addArticles, getArticles, deleteArticles} from "../Firebase";
 
 const Makaleler = () => {
   const [open, setOpen] = useState("");
@@ -21,18 +22,10 @@ const Makaleler = () => {
     open === id ? setOpen() : setOpen(id);
   };
 
-  const [data, setData] = useState([
-    {
-        id: 1,
-        makale_adi: "Investigation of university websites from technology acceptance model and information architecture perspective: A case study",
-        makale_sahibi: "Ferdi Sönmez",
-        makale_yayin_yeri: "Journal of Information Science",
-        makale_yayin_tarihi: "2022",
-        makale_link: "https://dx.doi.org/10.1177/01655515221094436",
-    },
-  ]);
+  const [data, setData] = useState([]);
 
     const [formModal, setFormModal] = useState(false);
+    const [submit, setSubmit] = useState(false);
     const [makale_adi, setMakale_adi] = useState("");
     const [makale_sahibi, setMakale_sahibi] = useState("");
     const [makale_yayin_yeri, setMakale_yayin_yeri] = useState("");
@@ -40,30 +33,35 @@ const Makaleler = () => {
     const [makale_link, setMakale_link] = useState("");
 
     const handleSubmit = () => {
-        const updatedData = data.concat({
-            id: data.length + 1,
-            makale_adi: makale_adi,
-            makale_sahibi: makale_sahibi,
-            makale_yayin_yeri: makale_yayin_yeri,
-            makale_yayin_tarihi: makale_yayin_tarihi,
-            makale_link: makale_link,
+      if( makale_adi !== '' && makale_sahibi !== '' && makale_yayin_yeri !== '' && makale_yayin_tarihi !== '' && makale_link !== ''){
+        addArticles(makale_adi, makale_sahibi, makale_yayin_yeri, makale_yayin_tarihi, makale_link).then(() => {
+          setSubmit(!submit);
+          setFormModal(!formModal);
+          setMakale_adi("");
+          setMakale_sahibi("");
+          setMakale_yayin_yeri("");
+          setMakale_yayin_tarihi("");
+          setMakale_link("");
         });
-        setData(updatedData);
-        setFormModal(!formModal);
-        setMakale_adi("");
-        setMakale_sahibi("");
-        setMakale_yayin_yeri("");
-        setMakale_yayin_tarihi("");
-        setMakale_link("");
-    };
-    
-    const handleDelete = (index) => {
-        const updatedData = [...data];
-        updatedData.splice(index, 1);
-        setData(updatedData);
+      }
+      else{
+        alert("Lütfen tüm alanları doldurunuz.");
+      }
     };
 
-  return (
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const fetchedData = await getArticles();
+          setData(fetchedData);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchData();
+    }, [submit,data]);
+
+      return (
     <div id="dersler">
       <h1>Makaleler</h1>
       <Accordion className="accordion-margin" open={open} toggle={toggle}>
@@ -173,7 +171,10 @@ const Makaleler = () => {
                     <td>
                       <Button.Ripple
                         color="flat-danger"
-                        onClick={() => handleDelete(index)}
+                        onClick={() => {
+                          deleteArticles(item.makale_adi);
+                          setSubmit(!submit);
+                        }}
                       >
                         <Trash className="mr-50" size={15} />
                       </Button.Ripple>

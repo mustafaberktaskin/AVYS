@@ -18,8 +18,7 @@ import {
   } from "reactstrap";
   
   import { useState,useEffect } from 'react'
-  
-  
+  import { addAdministration, getAdministration, deleteAdministration } from "../Firebase";
   import { Plus } from 'react-feather'
   
   import Timeline from '@components/timeline'
@@ -31,112 +30,45 @@ import {
   
   const IdariGorevler = () => {
   
-  
-  
-    
-  const [data, setData] = useState([
-    {
-      title: 'FENERBAHÇE ÜNİVERSİTESİ',
-      content: 'Bilgisayar Mühendisliği',
-      customContent: (
-        <div className='d-flex align-items-center'>
-          <div className='avatar bg-light-primary me-1'>
-            <div className='ms-50'>
-              <h6>Araştırma Görevlisi</h6>
-            </div>
-          </div>
-          <CardText tag='span' className='mb-0 font-weight-bold'>
-            2019 - Devam Ediyor
-          </CardText>
-        </div>
-      )
-    },
-    {
-      title: 'FENERBAHÇE ÜNİVERSİTESİ',
-      content: 'Bilgisayar Mühendisliği',
-      customContent: (
-        <div className='d-flex align-items-center'>
-          <div className='avatar bg-light-primary me-1'>
-            <div className='ms-50'>
-              <h6>Araştırma Görevlisi</h6>
-            </div>
-          </div>
-          <CardText tag='span' className='mb-0 font-weight-bold'>
-            2019 - Devam Ediyor
-          </CardText>
-        </div>
-      ),
-      color:'danger'
-    },
-    {
-      title: 'FENERBAHÇE ÜNİVERSİTESİ',
-      content: 'Bilgisayar Mühendisliği',
-      customContent: (
-        <div className='d-flex align-items-center'>
-          <div className='avatar bg-light-primary me-1'>
-            <div className='ms-50'>
-              <h6>Araştırma Görevlisi</h6>
-            </div>
-          </div>
-          <CardText tag='span' className='mb-0 font-weight-bold'>
-            2019
-          </CardText>
-          <CardText tag='span' className='mb-0 font-weight-bold'>
-            - 2023
-          </CardText>
-        </div>
-      ),
-      color:'success'
-    }
-  ])
+  const [data, setData] = useState([])
   const [formModal, setFormModal] = useState(false)
   const [submit, setSubmit] = useState(false)
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
+  const [gorev, setGorev] = useState('')
   const [customContent, setCustomContent] = useState('')
-  const [color, setColor] = useState('primary')
-  const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
-  
-  const handleAddSubmit = () => {
-    const updatedData = data.concat({
-      title: title,
-      content: content,
-      customContent: (
-        <div className='d-flex align-items-center'>
-          <div className='avatar bg-light-primary me-1'>
-            <div className='ms-50'>
-              <h6>{customContent}</h6>
-            </div>
-          </div>
-          <CardText tag='span' className='mb-0 font-weight-bold'>
-            {startDate}
-          </CardText>
-          <CardText tag='span' className='mb-0 font-weight-bold'>
-            - {endDate}
-          </CardText>
-        </div>
-      ),
-      color: color
-    })
-    setData(updatedData)
-    setSubmit(true)
-    setFormModal(!formModal)
-    setTitle('')
-    setContent('')
-    setCustomContent('')
-    setColor('primary')
-    setStartDate('')
-    setEndDate('')
-  }
+  const [baslangic, setBaslangic] = useState('')
+  const [bitis, setBitis] = useState('')
+
+
+
+  const handleSubmit = () => {
+    if (title !== '' && content !== '' && gorev !== '' && baslangic !== '' && bitis !== '') {
+      addAdministration(title, content, gorev, baslangic, bitis);
+      setSubmit(!submit);
+      setFormModal(!formModal);
+      setTitle("");
+      setContent("");
+      setGorev("");
+      setCustomContent("");
+      setBaslangic("");
+      setBitis("");
+    }
+  };
   
   useEffect(() => {
-    if (submit) {
-      console.log(data)
-      setSubmit(false)
-    }
-  }, [submit])
-  
+    const fetchData = async () => {
+      try{
+        const fetchedData = await getAdministration();
+        setData(fetchedData);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchData();
+  }, [submit,data]);
+
+
     return (
       <div>
         <Col>
@@ -173,19 +105,19 @@ import {
                     <Label className="form-label">
                       Görev Adı:
                     </Label>
-                    <Input  placeholder="Görev Adı" value={customContent} onChange={e => setCustomContent(e.target.value)} />
+                    <Input  placeholder="Görev Adı" value={gorev} onChange={e => setGorev(e.target.value)} />
                   </div>
                   <div className="m-2">
                     <Label className="form-label">
                       Başlangıç Tarihi:
                     </Label>
-                    <Input  placeholder="Başlangıç Tarihi" value={startDate} onChange={e => setStartDate(e.target.value)} />
+                    <Input  placeholder="Başlangıç Tarihi" value={baslangic} onChange={e => setBaslangic(e.target.value)} />
                   </div>
                   <div className="m-2">
                     <Label className="form-label">
                       Bitiş Tarihi:
                     </Label>
-                    <Input placeholder="Bitiş Tarihi" value={endDate} onChange={e => setEndDate(e.target.value)} />
+                    <Input placeholder="Bitiş Tarihi" value={bitis} onChange={e => setBitis(e.target.value)} />
                   </div>
                 </ModalBody>
                 <ModalFooter className="d-flex justify-content-center align-items-center">
@@ -198,8 +130,7 @@ import {
                   </Button>
                   <Button
                     color="primary"
-                    onClick={() => handleAddSubmit()}
-                  
+                    onClick={handleSubmit}
                   >
                     Kaydet
                   </Button>
@@ -212,7 +143,33 @@ import {
           <CardTitle tag='h2'><h2>İdari Görevler</h2></CardTitle>
         </CardHeader>
         <CardBody className='pt-1'>
-          <Timeline data={data} className='ms-50' />
+          <Timeline data={data.map((item) => {
+            return {
+              title: item.title,
+              content: item.content,
+              customContent:(
+                <div className='d-flex align-items-center'>
+                  <div className='avatar bg-light-primary me-1'>
+                    <div className='ms-50'>
+                      <h6>{item.gorev}</h6>
+                    </div>
+                  </div>
+                  <CardText tag='span' className='mb-0 font-weight-bold'>
+                    {item.baslangic} - {item.bitis}
+                  </CardText>
+                </div>
+              )
+            }
+          })} />
+          <div className='d-flex justify-content-end flex-row mb-1 '>
+            <Button
+              color="danger"
+              size="sm"
+              onClick={() => deleteAdministration()}
+            >
+              Sil
+            </Button>
+          </div>
         </CardBody>
       </Card>
       </Row>

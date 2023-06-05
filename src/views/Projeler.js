@@ -13,10 +13,13 @@ import {
   Input,
 } from "reactstrap";
 import { useState, useEffect } from "react";
-import { Plus } from "react-feather";
+import { Plus, Trash } from "react-feather";
+import { addProjects, getProjects, deleteProjects} from "../Firebase";
+
 
 const Projeler = () => {
   const [formModal, setFormModal] = useState(false);
+  const [submit, setSubmit] = useState(false);
   const [title, setTitle] = useState("");
   const [proje_sahibi, setProje_sahibi] = useState("");
   const [yayın_yeri, setYayın_yeri] = useState("");
@@ -26,45 +29,37 @@ const Projeler = () => {
   const [tamamlanma_durumu, setTamamlanma_durumu] = useState("");
   const [proje_turu, setProje_turu] = useState("");
 
-  const [data, setData] = useState([
-    {
-      id: 1,
-      title: "AKADEMİK PERSONELİN VERİLERİNİ YÖNETEBİLECEĞİ SİSTEM",
-      proje_sahibi: "Mustafa Berk Taşkın",
-      yayın_yeri: "FENERBAHÇE ÜNİVERSİTESİ",
-      proje_baslangic: "10.10.2019",
-      proje_bitis: "10.10.2021",
-      maliyet: "5000000",
-      para_birimi: "TL",
-      tamamlanma_durumu: "Tamamlandı",
-      proje_turu: "TÜBİTAK",
-    },
-  ]);
+  const [data, setData] = useState([]);
 
   const handleSubmit = () => {
-    const updatedData = data.concat({
-      id: data.length + 1,
-      title: title,
-      proje_sahibi: proje_sahibi,
-      yayın_yeri: yayın_yeri,
-      proje_baslangic: proje_baslangic,
-      proje_bitis: proje_bitis,
-      maliyet: maliyet,
-      para_birimi: "TL",  
-      tamamlanma_durumu: tamamlanma_durumu,
-      proje_turu: proje_turu,
-    });
-    setData(updatedData);
-    setFormModal(!formModal);
-    setTitle("");
-    setProje_sahibi("");
-    setYayın_yeri("");
-    setProje_baslangic("");
-    setProje_bitis("");
-    setMaliyet("");
-    setTamamlanma_durumu("");
-    setProje_turu("");
+    if (title !== '' && proje_sahibi !== '' && yayın_yeri !== '' && proje_baslangic !== '' && proje_bitis !== '' && maliyet !== '' && tamamlanma_durumu !== '' && proje_turu !== '') {
+      addProjects(title, proje_sahibi, yayın_yeri, proje_baslangic, proje_bitis, maliyet, tamamlanma_durumu, proje_turu);
+      setSubmit(!submit);
+      setFormModal(!formModal);
+      setTitle("");
+      setProje_sahibi("");
+      setYayın_yeri("");
+      setProje_baslangic("");
+      setProje_bitis("");
+      setMaliyet("");
+      setTamamlanma_durumu("");
+      setProje_turu("");
+    }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try{
+        const fetchedData = await getProjects();
+        setData(fetchedData);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchData();
+  }, [submit,data]);
+
+
 
   return (
     <div>
@@ -109,14 +104,6 @@ const Projeler = () => {
                 value={yayın_yeri}
                 onChange={(e) => setYayın_yeri(e.target.value)}
                 />
-            </div>
-            <div className="m-2">
-              <Label className="form-label">Yayın Yeri:</Label>
-              <Input
-                placeholder="Yayın Yeri"
-                value={yayın_yeri}
-                onChange={(e) => setYayın_yeri(e.target.value)}
-              />
             </div>
             <div className="m-2">
               <Label className="form-label">Proje Başlangıç Tarihi:</Label>
@@ -184,7 +171,7 @@ const Projeler = () => {
           <>
             <CardHeader>
               <CardTitle className="mt-1">
-                {item.id}. {item.title}
+                {item.title}
               </CardTitle>
             </CardHeader>
             <CardBody>
@@ -202,10 +189,21 @@ const Projeler = () => {
                 <Badge color="success">{item.tamamlanma_durumu}</Badge>
                 <CardText className="font-small-2 mt-2">
                 <span className="font-weight-bold">Proje Başlangıç Tarihi:</span>{" "}
-                {item.proje_baslangic}- {item.proje_bitis}, {item.maliyet} {item.para_birimi}
+                {item.proje_baslangic}- {item.proje_bitis}, {item.maliyet} TL
                 </CardText>
-
               </div>
+              <div className='design-group'>
+        <Button.Ripple
+          color='danger'
+          outline
+          size='sm'
+          onClick={() => {
+            deleteProjects(item.title);
+          }}
+        >
+          Sil
+        </Button.Ripple>
+      </div>
             </CardBody>
           </>
         </Card>

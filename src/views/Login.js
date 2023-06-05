@@ -8,6 +8,7 @@ import { Facebook, Twitter, Mail, GitHub } from "react-feather";
 // ** Custom Components
 import InputPasswordToggle from "@components/input-password-toggle";
 
+
 // ** Reactstrap Imports
 import {
   Row,
@@ -27,10 +28,27 @@ import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
 
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+// ** Firebase import
+import { login } from "../Firebase";
+
 const Login = () => {
   const { skin } = useSkin();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const source = skin === "dark" ? illustrationsDark : illustrationsLight;
+
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    login(email, password);
+    navigate("/kisisel-bilgiler");
+  };
+
 
   return (
     <div className="auth-wrapper auth-cover">
@@ -54,7 +72,7 @@ const Login = () => {
             </CardText>
             <Form
               className="auth-login-form mt-2"
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={handleSubmit}
             >
               <div className="mb-1">
                 <Label className="form-label" for="login-email">
@@ -65,6 +83,7 @@ const Login = () => {
                   id="login-email"
                   placeholder="john@example.com"
                   autoFocus
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div className="mb-1">
@@ -79,6 +98,7 @@ const Login = () => {
                 <InputPasswordToggle
                   className="input-group-merge"
                   id="login-password"
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
               <div className="form-check mb-1">
@@ -87,7 +107,7 @@ const Login = () => {
                   Beni hatırla
                 </Label>
               </div>
-              <Button tag={Link} to="/kisisel-bilgiler" color="primary" block>
+              <Button  color="primary" block>
                 Giriş yap
               </Button>
             </Form>

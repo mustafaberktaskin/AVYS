@@ -14,41 +14,40 @@ import {
 } from "reactstrap";
 import { useState, useEffect } from "react";
 import { Plus } from "react-feather";
+import { addExperiences, getExperiences, deleteExperiences } from "../Firebase";
 
 const Deneyimler = () => {
   const [formModal, setFormModal] = useState(false);
+  const [submit, setSubmit] = useState(false);
   const [kurum_adi, setKurum_adi] = useState("");
   const [unvan_en, setUnvan_en] = useState("");
   const [unvan_tr, setUnvan_tr] = useState("");
   const [baslama_tarihi, setBaslama_tarihi] = useState("");
   const [section, setSection] = useState("");
 
-  const [data, setData] = useState([
-    {
-      kurum_adi: "Türkiye İş Bankası",
-      unvan_en: "Software Developer",
-      unvan_tr: "Yazılım Geliştirici",
-      baslama_tarihi: "2020",
-      section: "Diğer",
-    },
-  ]);
+  const [data, setData] = useState([]);
 
   const handleSubmit = () => {
-    const updatedData = data.concat({
-      kurum_adi: kurum_adi,
-      unvan_en: unvan_en,
-      unvan_tr: unvan_tr,
-      baslama_tarihi: baslama_tarihi,
-      section: section,
-    });
-    setData(updatedData);
-    setFormModal(!formModal);
-    setKurum_adi("");
-    setUnvan_en("");
-    setUnvan_tr("");
-    setBaslama_tarihi("");
-    setSection("");
+    if ( kurum_adi !== "" && unvan_en !== "" && unvan_tr !== "" && baslama_tarihi !== "" && section !== "") {
+      addExperiences(kurum_adi, unvan_en, unvan_tr, baslama_tarihi, section);
+      setSubmit(true);
+      setFormModal(!formModal);
+    } else {
+      alert("Lütfen bilgileri eksiksiz doldurunuz.");
+    }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const fetchedData = await getExperiences();
+        setData(fetchedData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, [submit]);
 
   return (
     <div>
@@ -152,6 +151,9 @@ const Deneyimler = () => {
                   <span className="fw-bolder">{item.section}</span>
                 </Badge>
               </div>
+              <Button color="danger" size="m" className="mt-2" onClick={() => deleteExperiences(item.kurum_adi)}>
+                Sil
+              </Button>
             </CardBody>
           </>
         </Card>

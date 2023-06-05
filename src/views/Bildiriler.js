@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Accordion,
   AccordionBody,
@@ -13,6 +13,7 @@ import {
   Input,
 } from "reactstrap";
 import { Plus, Trash } from "react-feather";
+import { addDeclaration, getDeclarations, deleteDeclarations } from "../Firebase";
 
 const Bildiriler = () => {
   const [open, setOpen] = useState("");
@@ -32,33 +33,35 @@ const Bildiriler = () => {
   ]);
 
     const [formModal, setFormModal] = useState(false);
+    const [submit, setSubmit] = useState(false);
     const [bildiri_adi, setbildiri_adi] = useState("");
     const [bildiri_sahibi, setbildiri_sahibi] = useState("");
     const [bildiri_yayin_yeri, setbildiri_yayin_yeri] = useState("");
     const [bildiri_yayin_tarihi, setbildiri_yayin_tarihi] = useState("");
 
     const handleSubmit = () => {
-        const updatedData = data.concat({
-            id: data.length + 1,
-            bildiri_adi: bildiri_adi,
-            bildiri_sahibi: bildiri_sahibi,
-            bildiri_yayin_yeri: bildiri_yayin_yeri,
-            bildiri_yayin_tarihi: bildiri_yayin_tarihi,
-        });
-        setData(updatedData);
+      if( bildiri_adi !== '' && bildiri_sahibi !== '' && bildiri_yayin_yeri !== '' && bildiri_yayin_tarihi !== ''){
+        addDeclaration(bildiri_adi, bildiri_sahibi, bildiri_yayin_yeri, bildiri_yayin_tarihi);
+        setSubmit(!submit);
         setFormModal(!formModal);
         setbildiri_adi("");
         setbildiri_sahibi("");
         setbildiri_yayin_yeri("");
         setbildiri_yayin_tarihi("");
-        setbildiri_link("");
+      }
     };
-    
-    const handleDelete = (index) => {
-        const updatedData = [...data];
-        updatedData.splice(index, 1);
-        setData(updatedData);
-    };
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const fetchedData = await getDeclarations();
+          setData(fetchedData);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchData();
+    }, [submit,data]);
 
   return (
     <div id="dersler">
@@ -158,7 +161,7 @@ const Bildiriler = () => {
                     <td>
                       <Button.Ripple
                         color="flat-danger"
-                        onClick={() => handleDelete(index)}
+                        onClick={() => deleteDeclarations(item.bildiri_adi)}
                       >
                         <Trash className="mr-50" size={15} />
                       </Button.Ripple>

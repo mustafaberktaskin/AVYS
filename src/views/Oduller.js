@@ -14,43 +14,44 @@ import {
   } from "reactstrap";
   import { useState, useEffect } from "react";
   import { Plus } from "react-feather";
+  import { addRewards, getRewards, deleteRewards } from "../Firebase";
   
   const Oduller = () => {
     const [formModal, setFormModal] = useState(false);
+    const [submit, setSubmit] = useState(false);
     const [yil, setYil] = useState("");
     const [universite, setUniversite] = useState("");
     const [odul, setOdul] = useState("");
     const [tur, setTur] = useState("");
     const [ulke, setUlke] = useState("");
 
-    const [data, setData] = useState([
-      {
-        yil: "2019",
-        universite: "FENERBAHÇE ÜNİVERSİTESİ",
-        odul: "Yılın En İyi Üniversitesi",
-        tur: "Üniversite",
-        ulke: "Türkiye",
-
-      },
-    ]);
+    const [data, setData] = useState([]);
   
     const handleSubmit = () => {
-      const updatedData = data.concat({
-        yil: yil,
-        universite: universite,
-        odul: odul,
-        tur: tur,
-        ulke: ulke,
-      });
-        setData(updatedData);
+      if (yil !== '' && universite !== '' && odul !== '' && tur !== '' && ulke !== '') {
+        addRewards(yil, universite, odul, tur, ulke);
+        setSubmit(!submit);
         setFormModal(!formModal);
         setYil("");
         setUniversite("");
         setOdul("");
         setTur("");
         setUlke("");
+      }
     };
-  
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try{
+          const fetchedData = await getRewards();
+          setData(fetchedData);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      fetchData();
+    }, [submit,data]);
+
     return (
       <div>
      
@@ -160,6 +161,14 @@ import {
                     <span className="font-weight-bold">{item.tur},{item.ulke}</span>{" "}
                     </CardText>           
               </CardBody>
+              <Button
+                color="danger"
+                size="sm"
+                className="mb-1"
+                onClick={() => deleteRewards(item.odul)}
+              >
+                Sil
+              </Button>
             </>
           </Card>
         ))}

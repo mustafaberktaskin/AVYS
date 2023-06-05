@@ -13,37 +13,44 @@ import {
     Input,
   } from "reactstrap";
   import { useState, useEffect } from "react";
-  import { Plus } from "react-feather";
+  import { Plus, Trash } from "react-feather";
+  import { addMemberships, getMemberships, deleteMemberships } from "../Firebase";
   
   const Uyelikler = () => {
     const [formModal, setFormModal] = useState(false);
+    const [submit, setSubmit] = useState(false);
     const [kurum_adi, setKurum_adi] = useState("");
     const [uye_tipi, setUye_tipi] = useState("");
     const [uyelik_tarihi, setUyelik_tarihi] = useState("");
 
 
-    const [data, setData] = useState([
-      {
-        kurum_adi: "IEEE (COMPUTER SOCIETY)",
-        uye_tipi: "Öğrenci",
-        uyelik_tarihi: "2020",
-
-      },
-    ]);
+    const [data, setData] = useState([]);
   
     const handleSubmit = () => {
-      const updatedData = data.concat({
-        kurum_adi: kurum_adi,
-        uye_tipi: uye_tipi,
-        uyelik_tarihi: uyelik_tarihi,
-
-      });
-        setData(updatedData);
+      if (kurum_adi !== "" && uye_tipi !== "" && uyelik_tarihi !== "") {
+        addMemberships(kurum_adi, uye_tipi, uyelik_tarihi);
+        setSubmit(!submit);
         setFormModal(!formModal);
         setKurum_adi("");
         setUye_tipi("");
         setUyelik_tarihi("");
+      } else {
+        alert("Lütfen tüm alanları doldurunuz.");
+      }
     };
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const fetchedData = await getMemberships();
+          setData(fetchedData);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      fetchData();
+    }, [submit, data]);
+
   
     return (
       <div>
@@ -116,7 +123,7 @@ import {
         </div>
   
         {data.map((item) => (
-          <Card className="card-app-design ms-5 bg-transparent border-warning shadow-none">
+          <Card className="card-app-design ms-5 bg-transparent border-warning shadow-none w-25">
             <>
               <CardHeader>
                 <CardTitle tag="h2">
@@ -125,8 +132,17 @@ import {
               </CardHeader>
               <CardBody>
               <CardText className="font-medium-2 mb-1">
-                    <span className="font-weight-bold">{item.uye_tipi} {item.uyelik_tarihi}</span>{" "}
-                    </CardText>          
+                    <span className="font-weight-bold">{item.uye_turu}-{item.uyelik_tarihi}</span>{" "}
+                    </CardText> 
+                <div className="d-flex justify-content-end flex-row">
+                  <Button
+                    color="danger"
+                    size="sm"
+                    onClick={() => deleteMemberships(item.kurum_adi)}
+                  >
+                    <Trash /> Sil 
+                  </Button>
+                </div>
               </CardBody>
             </>
           </Card>

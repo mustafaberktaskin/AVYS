@@ -13,44 +13,46 @@ import {
     Input,
   } from "reactstrap";
   import { useState, useEffect } from "react";
-  import { Plus } from "react-feather";
+  import { Plus, Trash } from "react-feather";
+  import { addPatents, getPatents, deletePatents } from "../Firebase";
+
   
   const Patentler = () => {
     const [formModal, setFormModal] = useState(false);
+    const [submit, setSubmit] = useState(false);
     const [title, setTitle] = useState("");
     const [patent_sahibi, setPatent_sahibi] = useState("");
     const [patent_yili, setPatent_yili] = useState("");
     const [patent_turu, setPatent_turu] = useState("");
     const [section, setSection] = useState("");
 
-    const [data, setData] = useState([
-      {
-        id: 1,
-        title: "VENTİLATÖR KAYNAKLI PNÖMONİ OLUŞUMUNU ENGELLEYEN TÜP ÇEPERİNDE GERÇEKLEŞTİRİLEN KATMAN UYGULAMASI",
-        patent_sahibi: "Mustafa Berk Taşkın",
-        patent_yili: "2020",
-        patent_turu: "Patent",
-        section: "SECTION A - HUMAN NECESSITIES"
-      },
-    ]);
+    const [data, setData] = useState([]);
   
     const handleSubmit = () => {
-      const updatedData = data.concat({
-        id: data.length + 1,
-        title: title,
-        patent_sahibi: patent_sahibi,
-        patent_yili: patent_yili,
-        patent_turu: patent_turu,
-        section: section,
-        });
-        setData(updatedData);
+      if (title !== '' && patent_sahibi !== '' && patent_yili !== '' && patent_turu !== '' && section !== '') {
+        addPatents(title, patent_sahibi, patent_yili, patent_turu, section);
+        setSubmit(!submit);
         setFormModal(!formModal);
         setTitle("");
         setPatent_sahibi("");
         setPatent_yili("");
         setPatent_turu("");
         setSection("");
+      }
     };
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try{
+          const fetchedData = await getPatents();
+          setData(fetchedData);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      fetchData();
+    }, [submit,data]);
+
   
     return (
       <div>
@@ -152,6 +154,15 @@ import {
                 </div>
               </CardBody>
             </>
+            <div className="d-flex justify-content-start align-items-center flex-row mb-1 ms-1 ">
+              <Button
+                color="danger"
+                size="sm"
+                onClick={() => deletePatents(item.title)}
+              >
+                <Trash /> Sil
+              </Button>
+            </div>
           </Card>
         ))}
       </div>

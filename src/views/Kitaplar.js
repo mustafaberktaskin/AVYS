@@ -1,6 +1,7 @@
 import { Card, CardHeader, CardBody, CardTitle, CardText, Badge, Button, Modal, ModalBody, ModalFooter, Label, Input } from "reactstrap";
 import { useState,useEffect } from 'react'
 import { Plus } from 'react-feather'
+import { addBooks, getBooks, deleteBooks } from "../Firebase";
 
 
 const Kitaplar = () => {
@@ -15,50 +16,45 @@ const Kitaplar = () => {
   const [ISBN, setISBN] = useState('');
   const [basim_tarihi, setBasim_tarihi] = useState('');
   const [kitap_turu, setKitap_turu] = useState('');
-
-   const [data, setData] = useState([
-      {
-        id : 1,
-        title: 'Algoritma ve Programlamalara Giriş',
-        kitap_bolum: 'Kitap Bölümü',
-        yazar: 'Mustafa Berk Taşkın',
-        yayın_yeri: 'Oxford',
-        editor: 'Ferdi Sönmez',
-        basim_sayisi: '1',
-        ISBN: '978-605-235-895-1',
-        basim_tarihi: '2021',
-        kitap_turu: 'Ders Kitabı',
-
-      },
-    ]);
-
+  const [data, setData] = useState([]);
+  const [submit, setSubmit] = useState(false);
+  
+  
   const handleSubmit = () => {
-    const updatedData = data.concat({
-      id: data.length + 1,
-      title: title,
-      kitap_bolum: kitap_bolum,
-      yazar: yazar,
-      yayın_yeri: yayın_yeri,
-      editor: editor,
-      basim_sayisi: basim_sayisi,
-      ISBN: ISBN,
-      basim_tarihi: basim_tarihi,
-      kitap_turu: kitap_turu,
-    });
-    setData(updatedData);
-    setFormModal(!formModal);
-    setTitle('');
-    setKitap_bolum('');
-    setYazar('');
-    setYayın_yeri('');
-    setEditor('');
-    setBasim_sayisi('');
-    setISBN('');
-    setBasim_tarihi('');
-    setKitap_turu('');
+    if(title !== '' && kitap_bolum !== '' && yazar !== '' && yayın_yeri !== '' && editor !== '' && basim_sayisi !== '' && ISBN !== '' && basim_tarihi !== '' && kitap_turu !== ''){
+      addBooks(title,kitap_bolum,yazar,yayın_yeri,editor,basim_sayisi,ISBN,basim_tarihi,kitap_turu)
+      .then(() => {
+        setSubmit(true);
+        setFormModal(!formModal);
+        setTitle('');
+        setKitap_bolum('');
+        setYazar('');
+        setYayın_yeri('');
+        setEditor('');
+        setBasim_sayisi('');
+        setISBN('');
+        setBasim_tarihi('');
+        setKitap_turu('');
+      }
+      )
+      .catch((err) => console.log(err));
+    }else{
+      alert('Lütfen tüm alanları doldurunuz.');
+    }
   };
 
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const fetchedData = await getBooks();
+        setData(fetchedData);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchData();
+  }, [submit, data]);
   return (
     <div>
        <div className="d-flex justify-content-end flex-row mb-1 ">
@@ -154,7 +150,7 @@ const Kitaplar = () => {
     <Card className='card-app-design'>
         <>
       <CardHeader>
-        <CardTitle className='mt-1'>{item.id}. {item.title}</CardTitle>
+        <CardTitle className='mt-1'>{item.title}</CardTitle>
      </CardHeader>
     <CardBody>
       <CardText className='font-small-2 mb-2'>
@@ -166,6 +162,18 @@ const Kitaplar = () => {
         </Badge>
         <Badge className='me-1' color='light-primary'>{item.kitap_turu}</Badge>
         <Badge color='success'>{item.kitap_bolum}</Badge>
+      </div>
+      <div className='design-group'>
+        <Button.Ripple
+          color='danger'
+          outline
+          size='sm'
+          onClick={() => {
+            deleteBooks(item.title);
+          }}
+        >
+          Sil
+        </Button.Ripple>
       </div>
     </CardBody>
     </>
