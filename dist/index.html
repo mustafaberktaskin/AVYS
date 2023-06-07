@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAEEklEQVR4nO2bS2wNURjHZ4sNa1vx2LCS2DXMQTtzpdwzN56NhCDSRe94VEJFVGolWiuCJiTYaVK0VBfcUc8QaWtfSgnthkV7K+STE/pwO6eomTlzZv6/5L9reud838z87nxnrmEAAAAAAAAAAAAAAAAAAGA6au7TEpFp/wiEg+tRk+sRieQ9akSdI8QtEB8r/lhq7lMWTYiA3c9ptutRX2kD8h717++gOWhCyOQ9Olla/PEUqAENCBH3Hi1wPSrKGpAv0GhNFy1CE8JqQIHapWf/xK3oLhoQkXhPPPsZn1sRRxMiEG/vEFHPkO9VACGHLd5zvTTOhVcQcqTiPfCA6NPwRAOGRogOdkHIkYn39muaQvtrCDkS8dY/JRr9NrUBX7/7CxlPyAGLt2eIpEDIEYpXxnkIOTzxfpwkXhmDwxByKOJt9xGvjLY+CDlQ8R6XiFcGhByheGV0D+IJORDxnv0L8cqAkCMSrwwI+T/F29ZH/w2EHJF4ZUDIMxRv9yAFBoQcoXhlnO/FyDoS8cqAkP3u/R51lJ79hx8Rne0JJ+J/++wjdxhpxPWo/E8b7FFln0cZI224BapTXfix5D06ZaQN16My1YWflHIjjeQLtDXvUZtboE4l8eiWOAbVdQAAAABCw7a3zGO2c4bZTqcmOb0il5uVmFOC2U47sx3SKabFW40kYFZkuepispnG4nr/7CmTycw2bd6nvJD2jK+C/tWrt+n7syfTchpKF1W1s5pqj9THMlU7q32a4Oj5s6c163ILTNspTl5MeeUm6n87QHFl4P0Hqli/ufQqGF25NrcoEeJtvnyN4k7zpas+tyN+V3vxbt6+h0ZGihR3isUibd2xV18hy8T74OET0gWv67G+QmYWP1l68Ifq6kk3Dh9r0E/IOoo3UULWVbyJELLO4tVeyEkQr9ZCTop4tRSyWbFxYal4RXZV71M+WqgNKGItUxpgO0WxdtX1N0yLt6gemjFFMS3nRhxuP29UF4KpiuV8iUMDrqT3CuAtqutvlFVWzjUt3hSDbcTOKGNavFGsXXX9AQAApASWyZX9+t6vXIIshjFt57qZ2bA8lOKLpz5m8WHVX/1YzGPa/HMoT8g6vlzFlCXgkfUqO+eoX5SjVcR4PpDii7Gr37jBrT2qfEhWG5OIWkxpgsXfBDKy9hs1iw8FEYys5Xu870o+HrwbeB/8HnLS9ni12kP2E6/ue7yq9pD/WciyPV6xPwqmpxDEHjLEq1DIEK9iIUO8CoWcxJertHmpC+JVLGSIV6GQZS9Xtd68TS9ediMvZ14DUcM/vtRlWs4d1dNDlrKImo+f/aoPhqU0a+wNy8TIYb7qA2Epzap1fOkvATvNqg+GpS784u9PwJnsYtPOMiQbeg1ErccK/wO395LDOH26GwAAAABJRU5ErkJggg==" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAEEklEQVR4nO2bS2wNURjHZ4sNa1vx2LCS2DXMQTtzpdwzN56NhCDSRe94VEJFVGolWiuCJiTYaVK0VBfcUc8QaWtfSgnthkV7K+STE/pwO6eomTlzZv6/5L9reud838z87nxnrmEAAAAAAAAAAAAAAAAAAGA6au7TEpFp/wiEg+tRk+sRieQ9akSdI8QtEB8r/lhq7lMWTYiA3c9ptutRX2kD8h717++gOWhCyOQ9Olla/PEUqAENCBH3Hi1wPSrKGpAv0GhNFy1CE8JqQIHapWf/xK3oLhoQkXhPPPsZn1sRRxMiEG/vEFHPkO9VACGHLd5zvTTOhVcQcqTiPfCA6NPwRAOGRogOdkHIkYn39muaQvtrCDkS8dY/JRr9NrUBX7/7CxlPyAGLt2eIpEDIEYpXxnkIOTzxfpwkXhmDwxByKOJt9xGvjLY+CDlQ8R6XiFcGhByheGV0D+IJORDxnv0L8cqAkCMSrwwI+T/F29ZH/w2EHJF4ZUDIMxRv9yAFBoQcoXhlnO/FyDoS8cqAkP3u/R51lJ79hx8Rne0JJ+J/++wjdxhpxPWo/E8b7FFln0cZI224BapTXfix5D06ZaQN16My1YWflHIjjeQLtDXvUZtboE4l8eiWOAbVdQAAAABCw7a3zGO2c4bZTqcmOb0il5uVmFOC2U47sx3SKabFW40kYFZkuepispnG4nr/7CmTycw2bd6nvJD2jK+C/tWrt+n7syfTchpKF1W1s5pqj9THMlU7q32a4Oj5s6c163ILTNspTl5MeeUm6n87QHFl4P0Hqli/ufQqGF25NrcoEeJtvnyN4k7zpas+tyN+V3vxbt6+h0ZGihR3isUibd2xV18hy8T74OET0gWv67G+QmYWP1l68Ifq6kk3Dh9r0E/IOoo3UULWVbyJELLO4tVeyEkQr9ZCTop4tRSyWbFxYal4RXZV71M+WqgNKGItUxpgO0WxdtX1N0yLt6gemjFFMS3nRhxuP29UF4KpiuV8iUMDrqT3CuAtqutvlFVWzjUt3hSDbcTOKGNavFGsXXX9AQAApASWyZX9+t6vXIIshjFt57qZ2bA8lOKLpz5m8WHVX/1YzGPa/HMoT8g6vlzFlCXgkfUqO+eoX5SjVcR4PpDii7Gr37jBrT2qfEhWG5OIWkxpgsXfBDKy9hs1iw8FEYys5Xu870o+HrwbeB/8HnLS9ni12kP2E6/ue7yq9pD/WciyPV6xPwqmpxDEHjLEq1DIEK9iIUO8CoWcxJertHmpC+JVLGSIV6GQZS9Xtd68TS9ediMvZ14DUcM/vtRlWs4d1dNDlrKImo+f/aoPhqU0a+wNy8TIYb7qA2Epzap1fOkvATvNqg+GpS784u9PwJnsYtPOMiQbeg1ErccK/wO395LDOH26GwAAAABJRU5ErkJggg==" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600"
+    />
+    <title> Akademik Veri Yönetim Sistemi</title>
+    <script type="module" crossorigin src="/assets/index.25304028.js"></script>
+    <link rel="stylesheet" href="/assets/index.4e49f0cd.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    
+  </body>
+</html>
