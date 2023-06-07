@@ -123,27 +123,32 @@ import {
         </div>
   
         {data.map((item) => (
-          <Card className="card-app-design ms-5 bg-transparent border-warning shadow-none w-25">
+          <Card className="card-app-design ms-5 bg-transparent border-warning shadow-none">
+            <CardHeader className="">
+              <CardTitle tag="h5" className="text-center text-warning">
+                {item.kurum_adi}
+              </CardTitle>
+            </CardHeader>
             <>
-              <CardHeader>
-                <CardTitle tag="h2">
-                    <span className="fw-bolder">{item.kurum_adi}</span>
-                </CardTitle>
-              </CardHeader>
-              <CardBody>
-              <CardText className="font-medium-2 mb-1">
-                    <span className="font-weight-bold">{item.uye_turu}-{item.uyelik_tarihi}</span>{" "}
-                    </CardText> 
-                <div className="d-flex justify-content-end flex-row">
-                  <Button
+                <CardBody className="d-flex flex-row justify-content-between">
+                <div className="d-flex flex-column">
+                    <CardText className="text-center text-muted">
+                    Üye Tipi: {item.uye_turu}
+                    </CardText>
+                    <CardText className="text-center text-muted">
+                    Üyelik Tarihi: {item.uyelik_tarihi}
+                    </CardText>
+                </div>
+                <div className="d-flex flex-column justify-content-center">
+                    <Button
                     color="danger"
                     size="sm"
                     onClick={() => deleteMemberships(item.kurum_adi)}
-                  >
-                    <Trash /> Sil 
-                  </Button>
+                    >
+                    <Trash />
+                    </Button>
                 </div>
-              </CardBody>
+                </CardBody>
             </>
           </Card>
         ))}
